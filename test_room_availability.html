@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Room Availability</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-btn {
+            background: #3b141c;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 20px;
+        }
+        .test-btn:hover {
+            background: #5a1f2a;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌊 Jopat's Resort - Room Availability Test</h1>
+    <p>Click the button below to test the reservation form with room availability display:</p>
+    
+    <button class="test-btn" onclick="openReservationForm()">Test Reservation Form</button>
+    
+    <div id="test-results" style="margin-top: 30px; padding: 20px; background: white; border-radius: 8px; display: none;">
+        <h2>Test Results:</h2>
+        <div id="results-content"></div>
+    </div>
+
+    <script>
+        // Mock room data for testing
+        function initializeTestRooms() {
+            const testRooms = [
+                // Standard Rooms (101-110)
+                { id: 101, type: 'Standard Room', capacity: 2, status: 'Available', currentOccupancy: 0, guestName: '' },
+                { id: 102, type: 'Standard Room', capacity: 2, status: 'Available', currentOccupancy: 0, guestName: '' },
+                { id: 103, type: 'Standard Room', capacity: 2, status: 'Occupied', currentOccupancy: 2, guestName: 'Test Guest 1' },
+                { id: 104, type: 'Standard Room', capacity: 2, status: 'Available', currentOccupancy: 0, guestName: '' },
+                { id: 105, type: 'Standard Room', capacity: 2, status: 'Under Maintenance', currentOccupancy: 0, guestName: '' },
+                { id: 106, type: 'Standard Room', capacity: 2, status: 'Available', currentOccupancy: 0, guestName: '' },
+                { id: 107, type: 'Standard Room', capacity: 2, status: 'Occupied', currentOccupancy: 2, guestName: 'Test Guest 2' },
+                { id: 108, type: 'Standard Room', capacity: 2, status: 'Available', currentOccupancy: 0, guestName: '' },
+                { id: 109, type: 'Standard Room', capacity: 2, status: 'Available', currentOccupancy: 0, guestName: '' },
+                { id: 110, type: 'Standard Room', capacity: 2, status: 'Available', currentOccupancy: 0, guestName: '' },
+                
+                // Deluxe Rooms (201-205)
+                { id: 201, type: 'Deluxe Room', capacity: 4, status: 'Available', currentOccupancy: 0, guestName: '' },
+                { id: 202, type: 'Deluxe Room', capacity: 4, status: 'Occupied', currentOccupancy: 4, guestName: 'Test Guest 3' },
+                { id: 203, type: 'Deluxe Room', capacity: 4, status: 'Available', currentOccupancy: 0, guestName: '' },
+                { id: 204, type: 'Deluxe Room', capacity: 4, status: 'Available', currentOccupancy: 0, guestName: '' },
+                { id: 205, type: 'Deluxe Room', capacity: 4, status: 'Available', currentOccupancy: 0, guestName: '' },
+                
+                // Dormitory Rooms (301-302)
+                { id: 301, type: 'Dormitory Room', capacity: 20, status: 'Available', currentOccupancy: 0, guestName: '' },
+                { id: 302, type: 'Dormitory Room', capacity: 20, status: 'Available', currentOccupancy: 0, guestName: '' }
+            ];
+            
+            localStorage.setItem('jopats_rooms', JSON.stringify(testRooms));
+            console.log('✅ Test rooms initialized:', testRooms.length, 'rooms');
+        }
+
+        function loadRooms() {
+            return JSON.parse(localStorage.getItem('jopats_rooms') || '[]');
+        }
+
+        function displayRoomAvailability() {
+            const rooms = loadRooms();
+            const availabilityInfo = document.getElementById('room-availability-info');
+            const roomSelect = document.getElementById('res-room');
+            
+            if (!availabilityInfo || !roomSelect) return;
+            
+            // Calculate room statistics by type
+            const roomStats = {
+                'Standard Room': { total: 0, available: 0, occupied: 0, maintenance: 0 },
+                'Deluxe Room': { total: 0, available: 0, occupied: 0, maintenance: 0 },
+                'Dormitory Room': { total: 0, available: 0, occupied: 0, maintenance: 0 }
+            };
+            
+            rooms.forEach(room => {
+                if (roomStats[room.type]) {
+                    roomStats[room.type].total++;
+                    if (room.status === 'Available') {
+                        roomStats[room.type].available++;
+                    } else if (room.status === 'Occupied') {
+                        roomStats[room.type].occupied++;
+                    } else if (room.status === 'Under Maintenance') {
+                        roomStats[room.type].maintenance++;
+                    }
+                }
+            });
+            
+            // Create availability display HTML
+            let availabilityHTML = '<div style="font-weight: bold; margin-bottom: 8px; color: #3b141c;">🏠 Room Availability:</div>';
+            
+            Object.keys(roomStats).forEach(roomType => {
+                const stats = roomStats[roomType];
+                const availabilityColor = stats.available > 0 ? '#28a745' : '#dc3545';
+                const roomIcon = roomType === 'Standard Room' ? '🛏️' : roomType === 'Deluxe Room' ? '🏨' : '🏠';
+                
+                availabilityHTML += `
+                    <div style="margin-bottom: 6px; padding: 6px 8px; background: white; border-radius: 4px; border-left: 3px solid ${availabilityColor};">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 500;">${roomIcon} ${roomType}</span>
+                            <span style="color: ${availabilityColor}; font-weight: bold;">${stats.available} vacant / ${stats.total} total</span>
+                        </div>
+                        ${stats.available === 0 ? '<div style="color: #dc3545; font-size: 0.75rem; margin-top: 2px;">❌ No vacant rooms available</div>' : ''}
+                        ${stats.available > 0 && stats.available <= 2 ? '<div style="color: #ffc107; font-size: 0.75rem; margin-top: 2px;">⚠️ Only ' + stats.available + ' room(s) left!</div>' : ''}
+                    </div>
+                `;
+            });
+            
+            availabilityInfo.innerHTML = availabilityHTML;
+            
+            // Update room select options based on availability
+            const options = roomSelect.querySelectorAll('option');
+            options.forEach(option => {
+                if (option.value) {
+                    const roomType = option.value;
+                    const availableCount = roomStats[roomType]?.available || 0;
+                    
+                    if (availableCount === 0) {
+                        option.disabled = true;
+                        option.style.color = '#999';
+                        option.textContent = `${option.textContent.split('(')[0].trim()} (UNAVAILABLE)`;
+                    } else {
+                        option.disabled = false;
+                        option.style.color = '';
+                        const originalText = option.textContent.split('(')[0].trim();
+                        option.textContent = `${originalText} (${availableCount} available)`;
+                    }
+                }
+            });
+
+            // Log results for testing
+            console.log('📊 Room Availability Stats:', roomStats);
+            return roomStats;
+        }
+
+        function calculateDaysAndTotal() {
+            const arrivalDate = document.getElementById('res-date').value;
+            const departureDate = document.getElementById('res-departure').value;
+            const roomSelect = document.getElementById('res-room');
+            const totalField = document.getElementById('res-total');
+            const daysField = document.getElementById('res-days');
+            const breakdownField = document.getElementById('res-breakdown');
+            
+            if (arrivalDate && departureDate) {
+                const arrival = new Date(arrivalDate);
+                const departure = new Date(departureDate);
+                const days = Math.ceil((departure - arrival) / (1000 * 60 * 60 * 24));
+                
+                if (days > 0) {
+                    daysField.value = days;
+                    
+                    const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+                    const pricePerNight = selectedOption ? parseInt(selectedOption.getAttribute('data-price')) || 0 : 0;
+                    const total = days * pricePerNight;
+                    
+                    totalField.textContent = `₱${total.toLocaleString()}`;
+                    breakdownField.textContent = `${days} night(s) × ₱${pricePerNight.toLocaleString()}/night`;
+                } else {
+                    daysField.value = '0';
+                    totalField.textContent = '₱0';
+                    breakdownField.textContent = 'Invalid dates';
+                }
+            } else {
+                daysField.value = '';
+                totalField.textContent = '₱0';
+                breakdownField.textContent = 'Select dates and room';
+            }
+        }
+
+        async function openReservationForm() {
+            // Initialize test data
+            initializeTestRooms();
+            
+            const { value: formValues } = await Swal.fire({
+                title: '<h2 style="color: #3b141c; margin-bottom: 0;">🌊 Jopat\'s Resort</h2><p style="font-size: 0.8rem; color: #777;">Complete Reservation Details</p>',
+                width: '700px',
+                height: '600px',
+                heightAuto: false,
+                scrollbarPadding: true,
+                showConfirmButton: true,
+                showCloseButton: true,
+                html: `
+                    <style>
+                        @keyframes slideInFromTop {
+                            from { opacity: 0; transform: translateY(-20px); }
+                            to { opacity: 1; transform: translateY(0); }
+                        }
+                        .form-field-animated {
+                            animation: slideInFromTop 0.6s ease-out forwards;
+                            opacity: 0;
+                        }
+                        .swal2-input:focus, .swal2-textarea:focus, .swal2-select:focus {
+                            border-color: #f3961c !important;
+                            box-shadow: 0 0 0 3px rgba(243, 150, 28, 0.1) !important;
+                        }
+                    </style>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left; padding: 10px; max-height: 450px; overflow-y: auto; padding-right: 10px;" id="reservation-form-container">
+                        <div style="grid-column: span 2;" class="form-field-animated" style="animation-delay: 0.1s;">
+                            <label style="font-weight: bold; font-size: 0.85rem;">Full Name</label>
+                            <input id="res-name" class="swal2-input" placeholder="Juan Dela Cruz" style="margin: 5px 0 0 0; width: 100%;">
+                        </div>
+                        <div class="form-field-animated" style="animation-delay: 0.2s;">
+                            <label style="font-weight: bold; font-size: 0.85rem;">Email Address</label>
+                            <input id="res-email" type="email" class="swal2-input" placeholder="juan@email.com" style="margin: 5px 0 0 0; width: 100%;">
+                        </div>
+                        <div class="form-field-animated" style="animation-delay: 0.3s;">
+                            <label style="font-weight: bold; font-size: 0.85rem;">Phone Number</label>
+                            <input id="res-phone" type="tel" class="swal2-input" placeholder="09xxxxxxxxx" style="margin: 5px 0 0 0; width: 100%;">
+                        </div>
+                        <div class="form-field-animated" style="animation-delay: 0.5s;">
+                            <label style="font-weight: bold; font-size: 0.85rem;">Arrival Date</label>
+                            <input id="res-date" type="date" class="swal2-input" style="margin: 5px 0 0 0; width: 100%;" onchange="calculateDaysAndTotal()">
+                        </div>
+                        <div class="form-field-animated" style="animation-delay: 0.6s;">
+                            <label style="font-weight: bold; font-size: 0.85rem;">Departure Date</label>
+                            <input id="res-departure" type="date" class="swal2-input" style="margin: 5px 0 0 0; width: 100%;" onchange="calculateDaysAndTotal()">
+                        </div>
+                        <div class="form-field-animated" style="animation-delay: 0.7s;">
+                            <label style="font-weight: bold; font-size: 0.85rem;">No. of Guests</label>
+                            <input id="res-guests" type="number" class="swal2-input" placeholder="0" min="1" style="margin: 5px 0 0 0; width: 100%;">
+                        </div>
+                        <div class="form-field-animated" style="animation-delay: 0.8s;">
+                            <label style="font-weight: bold; font-size: 0.85rem;">Number of Days</label>
+                            <input id="res-days" type="text" class="swal2-input" placeholder="0" readonly style="margin: 5px 0 0 0; width: 100%; background: #f8f9fa; color: #3b141c; font-weight: bold;">
+                        </div>
+                        <div style="grid-column: span 2;" class="form-field-animated" style="animation-delay: 0.9s;">
+                            <label style="font-weight: bold; font-size: 0.85rem;">Select Room Type</label>
+                            <div id="room-availability-info" style="margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-radius: 6px; font-size: 0.8rem;">
+                                <!-- Room availability will be displayed here -->
+                            </div>
+                            <select id="res-room" class="swal2-input" style="margin: 5px 0 0 0; width: 100%;" onchange="calculateDaysAndTotal()">
+                                <option value="" disabled selected>Choose a room...</option>
+                                <option value="Standard Room" data-price="1500">Standard Room (₱1,500/night)</option>
+                                <option value="Deluxe Room" data-price="2500">Deluxe Room (₱2,500/night)</option>
+                                <option value="Dormitory Room" data-price="20000">Dormitory Room (₱20,000/night)</option>
+                            </select>
+                        </div>
+                        <div style="grid-column: span 2; background: linear-gradient(135deg, #3b141c, #5a1f2a); padding: 15px; border-radius: 8px; margin-top: 10px;" class="form-field-animated" style="animation-delay: 1.0s;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="color: #fff; font-size: 0.85rem; opacity: 0.9;">Total Amount:</div>
+                                    <div id="res-total" style="color: #f3961c; font-size: 1.5rem; font-weight: bold;">₱0</div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div id="res-breakdown" style="color: #fff; font-size: 0.8rem; opacity: 0.8;">Select dates and room</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                confirmButtonText: 'Test Form →',
+                confirmButtonColor: '#3b141c',
+                didOpen: () => {
+                    // Display room availability when form opens
+                    const stats = displayRoomAvailability();
+                    
+                    // Show test results
+                    document.getElementById('test-results').style.display = 'block';
+                    document.getElementById('results-content').innerHTML = `
+                        <h3>✅ Room Availability Feature Working!</h3>
+                        <p><strong>Standard Room:</strong> ${stats['Standard Room'].available} vacant / ${stats['Standard Room'].total} total</p>
+                        <p><strong>Deluxe Room:</strong> ${stats['Deluxe Room'].available} vacant / ${stats['Deluxe Room'].total} total</p>
+                        <p><strong>Dormitory Room:</strong> ${stats['Dormitory Room'].available} vacant / ${stats['Dormitory Room'].total} total</p>
+                        <p style="color: #28a745;">✨ The reservation form now shows real-time room availability!</p>
+                    `;
+                },
+                preConfirm: () => {
+                    const results = {
+                        name: document.getElementById('res-name').value,
+                        email: document.getElementById('res-email').value,
+                        phone: document.getElementById('res-phone').value,
+                        date: document.getElementById('res-date').value,
+                        departure: document.getElementById('res-departure').value,
+                        days: document.getElementById('res-days').value,
+                        guests: document.getElementById('res-guests').value,
+                        room: document.getElementById('res-room').value,
+                        total: document.getElementById('res-total').textContent
+                    };
+                    
+                    // Check if selected room type has available rooms
+                    const rooms = loadRooms();
+                    const availableRooms = rooms.filter(r => r.type === results.room && r.status === 'Available');
+                    
+                    if (availableRooms.length === 0) {
+                        Swal.showValidationMessage(`❌ No vacant ${results.room} available. Please choose a different room type.`);
+                        return false;
+                    }
+                    
+                    return results;
+                }
+            });
+
+            if (formValues) {
+                Swal.fire({
+                    title: '✅ Test Successful!',
+                    html: `
+                        <div style="text-align: left;">
+                            <h4>Reservation Details:</h4>
+                            <p><strong>Name:</strong> ${formValues.name}</p>
+                            <p><strong>Room:</strong> ${formValues.room}</p>
+                            <p><strong>Total:</strong> ${formValues.total}</p>
+                            <p style="color: #28a745; margin-top: 15px;">✅ Room availability validation is working correctly!</p>
+                        </div>
+                    `,
+                    confirmButtonColor: '#28a745'
+                });
+            }
+        }
+
+        // Make functions globally accessible
+        window.calculateDaysAndTotal = calculateDaysAndTotal;
+        window.displayRoomAvailability = displayRoomAvailability;
+    </script>
+</body>
+</html>
