@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jopat's Resort - System Flowchart</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #3b141c 0%, #f3961c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        .flowchart-section {
+            padding: 40px;
+        }
+        .section-title {
+            color: #3b141c;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            border-bottom: 3px solid #f3961c;
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+        .section-description {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .mermaid {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 40px;
+            border: 1px solid #e9ecef;
+        }
+        .flow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .flow-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            border-left: 5px solid #f3961c;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .flow-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .flow-card h3 {
+            color: #3b141c;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .flow-card ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        .flow-card li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+        .icon {
+            width: 24px;
+            height: 24px;
+            background: #f3961c;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .legend {
+            background: #e8f4f8;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .legend h3 {
+            color: #3b141c;
+            margin-top: 0;
+        }
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌊 Jopat's Resort & Hotel</h1>
+            <p>Complete System Flowchart - Easy to Understand Guide</p>
+        </div>
+
+        <div class="flowchart-section">
+            <h2 class="section-title">📋 Simple User Flow</h2>
+            <p class="section-description">
+                <strong>Paano gumagana ang system? </strong> Madaling steps mula pagpasok hanggang sa reservation!
+            </p>
+            <div class="mermaid">
+flowchart TD
+    Start([🏠 User Lands]) --> A
+    
+    A{👤 User Type?}
+    A -- "👨‍👩‍👧‍👦 Guest" --> B
+    A -- "👨‍💼 Admin" --> C
+    
+    B[🌐 Browse Website]
+    B --> D[📖 View About Us]
+    B --> E[🛏️ Check Rooms]
+    B --> F[📸 View Gallery]
+    B --> G[⭐ Read Reviews]
+    B --> H[📞 Contact Us]
+    
+    E --> I{Piliin Room:}
+    I -- "💰 Standard" --> J[Standard Room - ₱1,500]
+    I -- "💎 Deluxe" --> K[Deluxe Room - ₱2,500]
+    I -- "🏢 Dormitory" --> L[Dormitory - ₱20,000]
+    
+    J --> M[✅ Reserve Now]
+    K --> M
+    L --> M
+    
+    M --> N[📝 Fill Form]
+    N --> O{All Fields Complete?}
+    
+    O -- "❌ NO" --> P[🔧 Fix Errors]
+    P --> N
+    O -- "✅ YES" --> Q{Valid Email?}
+    
+    Q -- "❌ NO" --> R[📧 Fix Email]
+    R --> N
+    Q -- "✅ YES" --> S{Room Available?}
+    
+    S -- "❌ NO" --> T[🚫 Show Unavailable]
+    T --> I
+    S -- "✅ YES" --> U[💾 Save to Database]
+    
+    U --> V[🎉 Success Message]
+    V --> W[📧 Send Email]
+    
+    C[🔐 Admin Login] --> X[🔑 Enter Login]
+    X --> Y{Email/Username Correct?}
+    
+    Y -- "❌ NO" --> Z[🚫 Invalid Login]
+    Z --> X
+    Y -- "✅ YES" --> AA{Password Correct?}
+    
+    AA -- "❌ NO" --> BB[🔑 Wrong Password]
+    BB --> X
+    AA -- "✅ YES" --> CC[📊 Admin Dashboard] --> DD[📈 View Statistics]
+    CC --> EE[📅 Manage Bookings]
+    CC --> FF[🏠 Update Rooms]
+    CC --> GG[👥 Guest Management]
+    CC --> HH[💰 Financial Reports]
+    CC --> II{🚪 Logout?}
+    
+    II -- "❌ NO" --> CC
+    II -- "✅ YES" --> JJ[👋 Logout Process]
+    JJ --> KK[🔄 Clear Session]
+    KK --> LL[🏠 Back to Website]
+    
+    style Start fill:#4CAF50,color:#fff
+    style M fill:#FF9800,color:#fff
+    style U fill:#2196F3,color:#fff
+    style V fill:#4CAF50,color:#fff
+    style CC fill:#9C27B0,color:#fff
+    style II fill:#FF5722,color:#fff
+    style JJ fill:#FF9800,color:#fff
+            </div>
+
+            <h2 class="section-title">🏗️ System Structure</h2>
+            <p class="section-description">
+                <strong>Ano-anong bahagi ang sistema? </strong> Simpleng diagram ng teknikal na set-up!
+            </p>
+            <div class="mermaid">
+flowchart TB
+    subgraph "🎨 User Interface"
+        A[📱 HTML5 - Structure]
+        B[🎨 CSS3 - Design]
+        C[⚡ JavaScript - Logic]
+        D[📊 Chart.js - Graphs]
+    end
+    
+    subgraph "🌐 External Services"
+        E[🎯 Font Awesome - Icons]
+        F[🔔 SweetAlert2 - Alerts]
+        G[💾 Supabase - Database]
+        H[📧 Email Service]
+    end
+    
+    subgraph "⚙️ Backend Services"
+        I[🔐 Authentication]
+        J[📅 Booking Service]
+        K[🏠 Room Management]
+        L[📈 Analytics]
+    end
+    
+    subgraph "🗄️ Database Tables"
+        M[👥 Users]
+        N[📋 Bookings]
+        O[🛏️ Rooms]
+        P[🧳 Guests]
+        Q[⚙️ Settings]
+    end
+    
+    A --> G
+    B --> A
+    C --> G
+    D --> C
+    E --> A
+    F --> C
+    
+    G --> I
+    G --> J
+    G --> K
+    G --> L
+    
+    I --> M
+    J --> N
+    K --> O
+    L --> P
+    L --> Q
+    
+    style A fill:#E3F2FD
+    style G fill:#FFF3E0
+    style M fill:#F3E5F5
+            </div>
+
+            <h2 class="section-title">🔄 Data Flow</h2>
+            <p class="section-description">
+                <strong>Paano naglalakbay ang data? </strong> Simpleng flow ng impormasyon sa system!
+            </p>
+            <div class="mermaid">
+flowchart LR
+    subgraph "👤 User Actions"
+        A[📝 Reservation Form]
+        B[📞 Contact Form]
+        C[📊 Admin Dashboard]
+    end
+    
+    subgraph "⚡ Processing"
+        D[✅ Validation]
+        E[🧹 Data Cleaning]
+        F[🎯 Business Logic]
+        G[🔐 Security Check]
+    end
+    
+    subgraph "💾 Storage"
+        H[🗄️ Supabase DB]
+        I[💻 Local Storage]
+        J[🌐 Session Storage]
+    end
+    
+    subgraph "📤 Output"
+        K[📧 Email Notifications]
+        L[📈 Analytics]
+    end
+    
+    A --> D
+    B --> D
+    C --> G
+    
+    D --> E
+    E --> F
+    G --> F
+    
+    F --> H
+    F --> I
+    F --> J
+    
+    H --> K
+    F --> L
+    
+    style A fill:#E8F5E8
+    style H fill:#FFF3E0
+    style K fill:#F3E5F5
+            </div>
+
+            <h2 class="section-title">📅 Booking Process</h2>
+            <p class="section-description">
+                <strong>Step-by-step sa pag-book! </strong> Detalyadong proseso mula start hanggang end!
+            </p>
+            <div class="mermaid">
+sequenceDiagram
+    participant U as 👤 User
+    participant W as 🌐 Website
+    participant V as ✅ Validation
+    participant D as 💾 Database
+    participant E as 📧 Email
+    
+    U->>W: 👆 Click "Reserve Now"
+    W->>U: 📋 Show Form
+    U->>W: 📝 Fill Details
+    W->>V: 🔍 Check Data
+    V->>V: ✅ Validate
+    
+    alt Data Valid?
+        V->>D: 💾 Save Booking
+        D->>V: 🔢 Return ID
+        V->>E: 📧 Send Email
+        E->>U: 📨 Confirmation
+        V->>U: 🎉 Success!
+    else Data Invalid?
+        V->>U: ❌ Show Errors
+        U->>W: 🔄 Fix Form
+        W->>V: 🔍 Re-check
+    end
+            </div>
+
+            <div class="flow-grid">
+                <div class="flow-card">
+                    <h3><span class="icon">1</span> 🔐 User Login</h3>
+                    <ul>
+                        <li>👨‍👩‍👧‍👦 Guests - libreng browse</li>
+                        <li>👨‍💼 Admin - kailangan login</li>
+                        <li>🔒 Secure na password</li>
+                        <li>📱 Session management</li>
+                        <li>🎯 Role-based access</li>
+                    </ul>
+                </div>
+                
+                <div class="flow-card">
+                    <h3><span class="icon">2</span> 🏠 Room Management</h3>
+                    <ul>
+                        <li>💰 Standard Room - ₱1,500</li>
+                        <li>💎 Deluxe Room - ₱2,500</li>
+                        <li>🏢 Dormitory - ₱20,000</li>
+                        <li>✅ Real-time availability</li>
+                        <li>🔧 Maintenance tracking</li>
+                    </ul>
+                </div>
+                
+                <div class="flow-card">
+                    <h3><span class="icon">3</span> 📋 Booking System</h3>
+                    <ul>
+                        <li>📝 Online reservation form</li>
+                        <li>✅ Auto availability check</li>
+                        <li>📧 Email confirmation</li>
+                        <li>📊 Booking status</li>
+                        <li>💳 Payment ready</li>
+                    </ul>
+                </div>
+                
+                <div class="flow-card">
+                    <h3><span class="icon">4</span> 📊 Admin Dashboard</h3>
+                    <ul>
+                        <li>📈 Live statistics</li>
+                        <li>📅 Booking management</li>
+                        <li>👥 Guest relations</li>
+                        <li>💰 Business analytics</li>
+                        <li>⚙️ System settings</li>
+                    </ul>
+                </div>
+                
+                <div class="flow-card">
+                    <h3><span class="icon">5</span> 📈 Analytics</h3>
+                    <ul>
+                        <li>💵 Revenue tracking</li>
+                        <li>🏠 Occupancy rates</li>
+                        <li>👤 Guest demographics</li>
+                        <li>📅 Seasonal trends</li>
+                        <li>📊 Performance reports</li>
+                    </ul>
+                </div>
+                
+                <div class="flow-card">
+                    <h3><span class="icon">6</span> 📞 Communication</h3>
+                    <ul>
+                        <li>📝 Contact forms</li>
+                        <li>📧 Email alerts</li>
+                        <li>💬 Guest messaging</li>
+                        <li>🔔 Notification system</li>
+                        <li>⭐ Feedback collection</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="legend">
+                <h3>🎨 Color Legend</h3>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4CAF50;"></div>
+                        <span>🟢 Start/Success</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #FF9800;"></div>
+                        <span>🟠 Action Points</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #2196F3;"></div>
+                        <span>🔵 Processing</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #9C27B0;"></div>
+                        <span>🟣 Admin Functions</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f44336;"></div>
+                        <span>🔴 Errors/Warnings</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#3b141c',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#f3961c',
+                lineColor: '#666',
+                secondaryColor: '#f3961c',
+                tertiaryColor: '#e8f5e8'
+            }
+        });
+    </script>
+</body>
+</html>
